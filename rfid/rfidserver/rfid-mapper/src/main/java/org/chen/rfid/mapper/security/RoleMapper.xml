@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.chen.rfid.mapper.security.RoleMapper">
+    <delete id="deleteMenuRoleByRoleId">
+        delete from menu_role where rid = #{role_id}
+    </delete>
+
+    <delete id="deleteUserRoleByRoleId">
+        delete from user_role where rid = #{role_id}
+    </delete>
+
+    <delete id="deleteRoleByRoleId">
+        delete from t_role where id = #{role_id}
+    </delete>
+</mapper>

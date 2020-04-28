@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.chen.rfid.mapper.security.MenuRoleMapper">
+    <delete id="deleteByRid">
+      delete from menu_role where rid = #{rid}
+    </delete>
+    <insert id="insertRecord">
+        insert into menu_role (mid,rid) values
+        <foreach collection="mids" separator="," item="mid">
+            (#{mid},#{rid})
+        </foreach>
+    </insert>
+
+</mapper>
