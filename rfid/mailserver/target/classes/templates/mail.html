@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>访客邮件</title>
+</head>
+<body>
+    欢迎您进入机房！您的个人信息已经录入系统！
+    <table>
+        <tr>
+            <td>名字：</td>
+            <td th:text="${name}"></td>
+        </tr>
+        <tr>
+            <td>手机号码：</td>
+            <td th:text="${phone}"></td>
+        </tr>
+        <tr>
+            <td>身份证号：</td>
+            <td th:text="${identity_number}"></td>
+        </tr>
+        <tr>
+            <td>所属公司：</td>
+            <td th:text="${company}"></td>
+        </tr>
+        <tr>
+            <td>所属部门：</td>
+            <td th:text="${department}"></td>
+        </tr>
+        <tr>
+            <td>邮箱地址：</td>
+            <td th:text="${email}"></td>
+        </tr>
+        <tr>
+            <td>您进入机房的时间：</td>
+            <td th:text="${#dates.format(date, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        </tr>
+    </table>
+    <p>有您的加入,机房环境一定会越来越好,希望在未来的日子里,携手共进！😀</p>
+</body>
+</html>
