@@ -3,6 +3,9 @@ package org.chen.rfid.service.station;
 import org.apache.ibatis.annotations.Param;
 import org.chen.rfid.model.RespBean;
 import org.chen.rfid.model.station.Visitors;
+import org.chen.rfid.model.vo.VisitorsVo;
+
+import java.util.List;
 
 /**
  * @author 程强
@@ -47,4 +50,16 @@ public interface VisitorsService {
      * @return
      */
     RespBean updateVisitors(Visitors visitors);
+
+    /**
+     * 统计最近7天访客量
+     * @return
+     */
+    List<VisitorsVo> findLastVisitors();
+
+    /**
+     * id查询访客
+     * @return
+     */
+    Visitors selectOne(Long id);
 }

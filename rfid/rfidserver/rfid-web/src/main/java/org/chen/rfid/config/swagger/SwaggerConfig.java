@@ -27,7 +27,7 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build().apiInfo(new ApiInfoBuilder()
                         .title("机房人员室内定位管理系统")
-                        .description("后端接口设计文档 😀")
+                        .description("接口设计文档 😀")
                         .version("1.0.0")
                         .contact(new Contact("言少钱","https://github.com/cheng-qiang/","yiwannuofulasi@163.com"))
                         .license("江南一点雨")

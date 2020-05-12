@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.chen.rfid.model.security.User;
 import org.chen.rfid.service.security.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class ChatController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/users")
+    @GetMapping("/users")
     @ApiOperation(value = "获取用户接口",notes = "渲染list组件")
     public List<User> getAllUsers(){
         return userService.getAllUsersExceptCurrentUser();

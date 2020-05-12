@@ -2,5 +2,102 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.chen.rfid.mapper.station.CardMapper">
 
+    <resultMap id="BaseResultMap" type="org.chen.rfid.model.station.Personnel">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="createDate" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="startDate" property="startDate" jdbcType="TIMESTAMP"/>
+        <result column="endDate" property="endDate" jdbcType="TIMESTAMP"/>
+        <result column="backDate" property="backDate" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="BIGINT"/>
+        <result column="work" property="work" jdbcType="VARCHAR"/>
+        <association property="perVisitorTabVo" javaType="org.chen.rfid.model.vo.PerVisitorTabVo">
+            <result column="username" property="username" jdbcType="VARCHAR"/>
+            <result column="code" property="code" jdbcType="VARCHAR"/>
+            <result column="visitor" property="visitor" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="findPersonnelByPage" resultMap="BaseResultMap">
+        SELECT
+        trp.id,
+        trp.create_date AS createDate,
+        trp.start_date AS startDate,
+        trp.end_date AS endDate,
+        trp.`status`,
+        trp.`work`,
+        trp.back_date AS backDate,
+        tts.`code`,
+        tu.`name` as username,
+        tv.`name` as visitor
+
+        FROM
+        t_rfid_personnel AS trp,
+        t_tab_station AS tts,
+        t_visitors AS tv,
+        t_user AS tu,
+        per_tab_visitor AS ptv
+        WHERE
+        trp.id = ptv.personnerlId
+        AND tts.id = ptv.tabId
+        AND tv.id = ptv.visitorId
+        AND tu.id = ptv.userId
+        <if test="ps!=null">
+                <if test="ps.perVisitorTabVo!=null">
+                    <if test="ps.perVisitorTabVo.code !=null and ps.perVisitorTabVo.code !=''">
+                        and tts.code like concat('%',#{ps.perVisitorTabVo.code},'%')
+                    </if>
+                    <if test="ps.perVisitorTabVo.username !=null and ps.perVisitorTabVo.username !=''">
+                        and tu.name like concat('%',#{ps.perVisitorTabVo.username},'%')
+                    </if>
+                    <if test="ps.perVisitorTabVo.visitor !=null and ps.perVisitorTabVo.visitor !=''">
+                        and tv.name like concat('%',#{ps.perVisitorTabVo.visitor},'%')
+                    </if>
+                </if>
+                <if test="ps.status!=null and ps.status != ''">
+                    and trp.status = #{ps.status}
+                </if>
+            </if>
+            <if test="beginDateScope !=null">
+                and trp.create_date between #{beginDateScope[0]} and #{beginDateScope[1]}
+            </if>
+            <if test="page !=null and size!=null">
+                limit #{page},#{size}
+            </if>
+    </select>
+
+    <select id="getTotal" resultType="java.lang.Long">
+        SELECT
+            COUNT(*)
+        FROM
+        t_rfid_personnel AS trp,
+        t_tab_station AS tts,
+        t_visitors AS tv,
+        t_user AS tu,
+        per_tab_visitor AS ptv
+        WHERE
+        trp.id = ptv.personnerlId
+        AND tts.id = ptv.tabId
+        AND tv.id = ptv.visitorId
+        AND tu.id = ptv.userId
+                <if test="ps!=null">
+                    <if test="ps.perVisitorTabVo!=null">
+                        <if test="ps.perVisitorTabVo.code !=null and ps.perVisitorTabVo.code !=''">
+                            and tts.code like concat('%',#{ps.perVisitorTabVo.code},'%')
+                        </if>
+                        <if test="ps.perVisitorTabVo.username !=null and ps.perVisitorTabVo.username !=''">
+                            and tu.name like concat('%',#{ps.perVisitorTabVo.username},'%')
+                        </if>
+                        <if test="ps.perVisitorTabVo.visitor !=null and ps.perVisitorTabVo.visitor !=''">
+                            and tv.name like concat('%',#{ps.perVisitorTabVo.visitor},'%')
+                        </if>
+                    </if>
+                    <if test="ps.status!=null and ps.status != ''">
+                        and trp.status = #{ps.status}
+                    </if>
+                </if>
+                <if test="beginDateScope !=null">
+                    and trp.create_date between #{beginDateScope[0]} and #{beginDateScope[1]}
+                </if>
+    </select>
 
 </mapper>

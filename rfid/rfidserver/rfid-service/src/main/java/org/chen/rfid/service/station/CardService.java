@@ -1,10 +1,12 @@
 package org.chen.rfid.service.station;
 
+import org.apache.ibatis.annotations.Param;
 import org.chen.rfid.model.RespBean;
 import org.chen.rfid.model.RespPageBean;
 import org.chen.rfid.model.station.Personnel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 程强
@@ -12,6 +14,25 @@ import java.util.Date;
  * @Description:
  */
 public interface CardService {
+
+    /**
+     * 分页查找制卡列表信息
+     * @param page
+     * @param size
+     * @param personnel
+     * @param beginDateScope
+     * @return
+     */
+    RespPageBean findPersonnelByPage(Integer page,Integer size, Personnel personnel,Date[] beginDateScope);
+
+
+
+
+
+
+
+
+
     /**
      * 制卡列表
      * @param page 页

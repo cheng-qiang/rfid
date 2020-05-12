@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.chen.rfid.model.RespBean;
 import org.chen.rfid.model.RespPageBean;
+import org.chen.rfid.model.annotation.SysLog;
 import org.chen.rfid.model.station.Personnel;
 import org.chen.rfid.service.station.impl.CardServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,32 +38,33 @@ public class CardController {
     @ApiOperation(value = "制卡列表接口")
     public RespPageBean getCardByPage(@RequestParam(defaultValue = "1")Integer page,
                                       @RequestParam(defaultValue = "10")Integer size,
-                                      @RequestParam(defaultValue = "")String tabStationCode,
-                                      @RequestParam(defaultValue = "")String visitorName,
-                                      @RequestParam(defaultValue = "")Long userId,
-                                      @RequestParam(defaultValue = "")Integer status,
-                                      Date[] createDate){
-        return cardService.getCardByPage(page,size,tabStationCode,visitorName,userId,status,createDate);
+                                      Personnel personnel,
+                                      Date[] beginDateScope){
+        return cardService.findPersonnelByPage(page, size, personnel, beginDateScope);
     }
 
+    @SysLog(value = "添加绑定")
     @ApiOperation(value = "添加绑定接口")
     @PostMapping("/")
     public RespBean addCard(@RequestBody @Valid Personnel personnel){
         return cardService.addCard(personnel);
     }
 
+    @SysLog(value = "更新绑定")
     @ApiOperation(value = "编辑绑定接口")
     @PutMapping("/")
     public RespBean editCard(@RequestBody @Valid Personnel personnel){
         return cardService.editCard(personnel);
     }
 
+    @SysLog(value = "删除绑定")
     @ApiOperation(value = "删除绑定接口")
     @DeleteMapping("/{id}")
     public RespBean deleteCard(@PathVariable Long id){
         return cardService.deleteCard(id);
     }
 
+    @SysLog(value = "批量删除绑定")
     @ApiOperation(value = "批量删除绑定接口")
     @DeleteMapping("/")
     public RespBean deleteCards(Long[] ids){

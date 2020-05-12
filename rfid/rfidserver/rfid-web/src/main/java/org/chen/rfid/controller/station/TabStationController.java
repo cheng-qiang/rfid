@@ -3,6 +3,7 @@ package org.chen.rfid.controller.station;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.chen.rfid.model.RespBean;
+import org.chen.rfid.model.annotation.SysLog;
 import org.chen.rfid.model.station.TabStation;
 import org.chen.rfid.service.station.impl.TabStationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,24 +48,28 @@ public class TabStationController {
     }
 
 
+    @SysLog(value = "添加标签")
     @PostMapping("/")
     @ApiOperation(value = "添加定位标签接口")
     public RespBean addTabStation(@RequestBody @Valid TabStation tabStation){
         return tabStationService.addTabStation(tabStation);
     }
 
+    @SysLog(value = "更新标签")
     @PutMapping("/")
     @ApiOperation(value = "更新定位标签接口")
     public RespBean updateTabStation(@RequestBody @Valid TabStation tabStation){
         return tabStationService.updateTabStation(tabStation);
     }
 
+    @SysLog(value = "删除标签")
     @DeleteMapping("/{id}")
     @ApiOperation(value = "删除标签接口")
     public RespBean deleteTabStation(@PathVariable(value = "id")Long id){
         return tabStationService.deleteTabStation(id);
     }
 
+    @SysLog(value = "批量删除标签")
     @DeleteMapping("/")
     @ApiOperation(value = "批量删除标签接口")
     public RespBean deleteTabStations(Long[] ids){

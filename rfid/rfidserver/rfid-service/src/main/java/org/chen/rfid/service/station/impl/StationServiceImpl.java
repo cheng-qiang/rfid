@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -103,7 +102,6 @@ public class StationServiceImpl implements StationService {
     }
 
     public RespBean importStations(MultipartFile file) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<Station> stations = new ArrayList<Station>();
         int count = 0;
         //解析EXCEL文件 --- > List<Station>
@@ -114,10 +112,7 @@ public class StationServiceImpl implements StationService {
             for (int i = 2;i<sheet.getLastRowNum()+1;i++){
                 HSSFRow row = sheet.getRow(i);
                 String code = row.getCell(1).getStringCellValue();
-                String codeOnly = isCodeOnly(code);
-                if (codeOnly.toLowerCase().equals("false")){
-                    // logger.info(code);
-                    //如果编号已经存在，此记录不需要重新录入，跳过此次循环。
+                if (isCodeOnly(code).toLowerCase().equals("false")){
                     continue;
                 }
                 String name = row.getCell(2).getStringCellValue();
@@ -139,6 +134,9 @@ public class StationServiceImpl implements StationService {
         }
         if (stations.size()==count){
             return RespBean.ok(Constants.SUCCESS);
+        }
+        if (stations.size() == 0){
+            return RespBean.error("您重复导入数据啦!");
         }
         return RespBean.error(Constants.ERROR);
     }

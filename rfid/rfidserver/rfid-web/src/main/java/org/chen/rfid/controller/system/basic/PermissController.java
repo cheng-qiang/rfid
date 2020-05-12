@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.chen.rfid.model.RespBean;
+import org.chen.rfid.model.annotation.SysLog;
 import org.chen.rfid.model.security.Menu;
 import org.chen.rfid.model.security.Role;
 import org.chen.rfid.service.security.impl.MenuServiceImpl;
@@ -56,6 +57,7 @@ public class PermissController {
     }
 
     @PutMapping("/")
+    @SysLog(value = "更新权限")
     @ApiOperation(value = "更新menu_role表的接口",notes = "根据角色id删除所有相关的menu_role记录，再通过角色id添加其能访问的所有资源id，更新menu_role表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rid",value = "角色id",required = true),
@@ -65,12 +67,14 @@ public class PermissController {
         return menuService.updateMenuRoles(rid,mids);
     }
 
+    @SysLog(value = "添加角色")
     @PostMapping("/")
     @ApiOperation(value = "添加角色",notes = "添加角色的接口")
     public RespBean insertRole(@RequestBody Role role){
         return roleService.insertRole(role);
     }
 
+    @SysLog(value = "删除角色")
     @DeleteMapping("/{role_id}")
     @ApiOperation(value = "删除角色",notes = "根据角色id删除角色的接口")
     public RespBean deleteRole(@PathVariable Long role_id){
