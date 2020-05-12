@@ -15,6 +15,12 @@
         <result column="remark" property="remark" jdbcType="VARCHAR"/>
         <result column="address" property="address" jdbcType="VARCHAR"/>
     </resultMap>
+    <update id="updateUserPassword">
+        update t_user set password = #{encodePass} where id = #{userId}
+    </update>
+    <update id="updateUserFace">
+         update t_user set userface = #{url} where id = #{id}
+    </update>
     <select id="getUserRolesByUserId" resultType="org.chen.rfid.model.security.Role">
         SELECT
             r.*

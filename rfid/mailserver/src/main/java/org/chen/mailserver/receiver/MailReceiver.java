@@ -1,7 +1,6 @@
 package org.chen.mailserver.receiver;
 
 import com.rabbitmq.client.Channel;
-import com.sun.mail.smtp.SMTPAddressFailedException;
 import org.chen.rfid.model.station.Visitors;
 import org.chen.rfid.util.Constants;
 import org.slf4j.Logger;
@@ -13,14 +12,13 @@ import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.springframework.messaging.Message;
 
 import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.Date;

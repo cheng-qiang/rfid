@@ -33,4 +33,7 @@ public interface Constants {
     String MAIL_EXCHANGE_NAME = "chen.mail.exchange";
     /**路由名称*/
     String MAIL_ROUTING_KEY_NAME = "chen.mail.routing.key";
+    /**文件上传服务器*/
+    String FILE_WEB_URL = "http://192.168.1.243/";
+    String FILE_WEB_TOKEN = "FastDFS1234567890";
 }

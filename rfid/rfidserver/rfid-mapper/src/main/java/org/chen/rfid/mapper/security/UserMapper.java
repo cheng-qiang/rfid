@@ -27,4 +27,20 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> getAllUsers(@Param("id") long id,@Param("keyWords") String keyWords);
+
+    /**
+     * 更新密码
+     * @param userId
+     * @param encodePass
+     * @return
+     */
+    Integer updateUserPassword(@Param("userId") Long userId, @Param("encodePass") String encodePass);
+
+    /**
+     * 更新用户头像
+     * @param url
+     * @param id
+     * @return
+     */
+    Integer updateUserFace(@Param("url") String url, @Param("id") Long id);
 }

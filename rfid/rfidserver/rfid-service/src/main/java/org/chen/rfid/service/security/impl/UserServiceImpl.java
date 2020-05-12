@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,5 +71,29 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         queryWrapper.ne(User::getId,UserUtil.getCurrentUser().getId());
         List<User> users = userMapper.selectList(queryWrapper);
         return users;
+    }
+
+    @Override
+    public Integer updateCurrentUser(User user) {
+        return userMapper.updateById(user);
+    }
+
+    @Override
+    public boolean updateUserPassword(String oldPass, String pass, Long userId) {
+        User user = userMapper.selectById(userId);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (encoder.matches(oldPass, user.getPassword())) {
+            String encodePass = encoder.encode(pass);
+            Integer result = userMapper.updateUserPassword(userId, encodePass);
+            if (result == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Integer updateUserFace(String url, Long id) {
+        return userMapper.updateUserFace(url,id);
     }
 }
