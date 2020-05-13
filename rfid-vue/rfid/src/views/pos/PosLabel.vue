@@ -339,7 +339,6 @@
                     });
                 });
             },
-            /*批量删除基站*/
             deleteTabs(){
                 this.$confirm('此操作将永久删除【'+this.multipleSelection.length+'】条记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',

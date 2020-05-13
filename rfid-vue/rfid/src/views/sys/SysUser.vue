@@ -15,7 +15,7 @@
                        <img :src="user.userFace" :alt="user.name" :title="user.name" class="userface-img">
                    </div>
                     <div class="userInfo-container">
-                        <div>用户名：{{user.name}}</div>
+                        <div>用户名：{{user.username}}</div>
                         <div>昵称：{{user.nickname}}</div>
                         <div>手机号码：{{user.phone}}</div>
                         <div>电话号码：{{user.telephone}}</div>
@@ -79,7 +79,6 @@
             initUsers(){
                 this.getRequest('/system/user/?keyWords='+this.keyWords).then(resp=>{
                     if (resp){
-                        console.log(resp)
                         this.users = resp;
                     }
                 })

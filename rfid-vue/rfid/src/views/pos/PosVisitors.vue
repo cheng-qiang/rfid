@@ -16,6 +16,10 @@
             <div style="display: flex;justify-content: flex-end;">
                 <el-button
                         size="mini"
+                        type="success"
+                        @click="goStatistics"><i class="fa fa-bar-chart" style="margin-right: 2px"></i><span>访客统计</span></el-button>
+                <el-button
+                        size="mini"
                         type="primary"
                         @click="addVisitor"><i class="el-icon-user"></i><span>添加访客</span></el-button>
             </div>
@@ -234,6 +238,9 @@
             this.initVisitors();
         },
         methods:{
+            goStatistics(){
+                this.$router.push("/Statistics");
+            },
             initVisitors(){
                 this.loading = true;
                 let url = '/position/visitors/base/?page=' + this.page + '&size=' + this.size + "&name=" + this.visitors_name;

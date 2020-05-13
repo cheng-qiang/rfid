@@ -20,6 +20,16 @@
                         @keydown.enter.native="initCard"
                         :disabled="showAdvanceSearchView"
                 ></el-input>
+                <el-select v-model="username" placeholder="请选择..."
+                           :disabled="showAdvanceSearchView"
+                           size="small"
+                           style="width: 430px;margin-left: 8px;">
+                    <el-option
+                            v-for="item in this.users"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                    </el-option></el-select>
                 <el-button style="margin-left: 8px;" icon="el-icon-search" type="primary" @click="initCard" :disabled="showAdvanceSearchView">
                     搜索
                 </el-button>
@@ -39,20 +49,9 @@
         <transition name="slide-fade">
             <div v-show="showAdvanceSearchView" style="border: 1px solid #409eff;border-radius: 5px;box-sizing: border-box;padding: 5px;margin: 10px 0px;">
                 <el-row style="margin-bottom: 10px;margin-left: 10px;">
-                    <el-col :span="7">
-                        业务操作员：
-                        <el-select v-model="searchValue.userId" placeholder="请选择..." size="mini"
-                                   style="width: 130px;">
-                            <el-option
-                                    v-for="item in users"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option></el-select>
-                    </el-col>
                     <el-col :span="5">
                         工作状态：
-                        <el-select v-model="searchValue.status" placeholder="请选择..." size="mini"
+                        <el-select v-model="searchValue.statu" placeholder="请选择..." size="mini"
                                    style="width: 130px;">
                             <el-option
                                     v-for="item in status"
@@ -76,19 +75,6 @@
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-col>
-                    <!--<el-col :span="10">
-                        工作日期：
-                        <el-date-picker
-                                v-model="searchValue.work_date"
-                                type="daterange"
-                                size="mini"
-                                unlink-panels
-                                value-format="yyyy-MM-dd"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期">
-                        </el-date-picker>
-                    </el-col>-->
                     <el-col :span="3" :offset="4">
                         <el-button size="mini">取消</el-button>
                         <el-button size="mini" icon="el-icon-search" type="primary" @click="initCard('advanced')">搜索</el-button>
@@ -119,7 +105,7 @@
                         label="标签编号"
                         width="100">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.tabCode }}</span>
+                        <span>{{ scope.row.perVisitorTabVo.code }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -130,7 +116,7 @@
                         <el-popover trigger="hover" placement="top">
                             <p>工作描述: {{ scope.row.work }}</p>
                             <div slot="reference" class="name-wrapper">
-                                <el-tag size="medium">{{ scope.row.visitorsName }}</el-tag>
+                                <el-tag size="medium">{{ scope.row.perVisitorTabVo.visitor }}</el-tag>
                             </div>
                         </el-popover>
                     </template>
@@ -167,14 +153,14 @@
                         label="工作状态"
                         width="100">
                     <template slot-scope="scope">
-                        <span>{{ work_status[scope.row.status] }}</span>
+                        <span>{{ work_status[scope.row.status-1] }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
                         label="业务操作员"
                         width="100">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{ scope.row.userName }}</span>
+                        <span style="margin-left: 10px">{{ scope.row.perVisitorTabVo.username }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" fixed="right" width="200">
@@ -219,57 +205,23 @@
                         <el-row style="display: flex;justify-content: space-around;">
                             <el-col :span="8">
                                 <el-form-item label="业务操作员:" prop="userId">
-                                    <el-select v-model="card.userId" placeholder="请输入关键字" size="mini"
-                                               filterable
-                                               remote
-                                               reserve-keyword
-                                               :remote-method="remoteMethodUser"
-                                               style="width: 130px;"
-                                               :loading="loading">
-                                        <el-option
-                                                v-for="item in users"
-                                                :key="item.id"
-                                                :label="item.label"
-                                                :value="item.id">
-                                        </el-option></el-select>
+                                    <el-select v-model="card.userId" placeholder="请选择">
+                                        <option v-for="user in this.users"
+                                                :key="user.id"
+                                                :label="user.name"
+                                                :value="user.id"></option>
+                                    </el-select>
+<!--                                    <el-input v-model="card.perVisitorTabVo.username" placeholder="请输入内容"></el-input>-->
                                 </el-form-item>
                             </el-col>
                             <el-col :span="7">
-                                <el-form-item label="访客名称:" prop="visitorsId">
-                                    <el-select v-model="card.visitorsId"
-                                               filterable
-                                               remote
-                                               reserve-keyword
-                                               placeholder="请输入关键字"
-                                               :remote-method="remoteMethod"
-                                               size="mini"
-                                               style="width: 130px;"
-                                               :loading="loading">
-                                        <el-option
-                                                v-for="item in options"
-                                                :key="item.id"
-                                                :label="item.label"
-                                                :value="item.id">
-                                        </el-option></el-select>
+                                <el-form-item label="访客名称:" prop="perVisitorTabVo.visitor">
+                                    <el-input v-model="card.perVisitorTabVo.visitor" placeholder="请输入内容"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="7" >
-                                <el-form-item label="标签编号:" prop="TabStationId">
-                                    <el-select v-model="card.TabStationId"
-                                               filterable
-                                               remote
-                                               reserve-keyword
-                                               placeholder="请输入关键字"
-                                               :remote-method="remoteMethodTabStationId"
-                                               size="mini"
-                                               style="width: 130px;"
-                                               :loading="loading">
-                                        <el-option
-                                                v-for="item in optionsTabStationId"
-                                                :key="item.id"
-                                                :label="item.label"
-                                                :value="item.id">
-                                        </el-option></el-select>
+                                <el-form-item label="标签编号:" prop="perVisitorTabVo.code">
+                                    <el-input v-model="card.perVisitorTabVo.code" placeholder="请输入内容"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="7" style="float: left;">
@@ -349,12 +301,12 @@
             return{
                 tabStationCode:"",
                 visitorName:'',
+                username:'',
+                keyWords:'',
                 showAdvanceSearchView: false,
                 searchValue:{
                     createDate:'',
-                    /*work_date:'',*/
-                    status:'',
-                    userId:''
+                    statu:''
                 },
                 title: '',
                 dialogVisible: false,
@@ -369,34 +321,31 @@
                 tableData:[],
                 card:{
                     id:'',
-                    userId:'',
-                    TabStationId:'',
-                    visitorsId:'',
                     createDate:'',
                     startDate:'',
                     endDate:'',
                     backDate:'',
                     status:'',
-                    work:''
+                    work:'',
+                    userId:'',
+                    perVisitorTabVo: {code:'',username:'',visitor:''}
                 },
                 visitors:[],
                 tab:[],
-                listUser:[],
-                options:[],
-                optionsTabStationId:[],
-                users:[],
+                users:[
+                ],
                 status:[{
                     label:'未工作',
-                    value:0
-                },{
-                    label:'工作中',
                     value:1
                 },{
-                    label:'结束工作',
+                    label:'工作中',
                     value:2
                 },{
-                    label:'暂停工作',
+                    label:'结束工作',
                     value:3
+                },{
+                    label:'暂停工作',
+                    value:4
                 }],
                 rules: {
 
@@ -414,137 +363,49 @@
                 this.card.endDate = "";
                 this.card.startDate = "";
                 this.card.createDate = "";
-                this.card.visitorsId = "";
-                this.card.TabStationId = "";
-                this.card.userId = "";
                 this.card.id = "";
-                this.options = [];
-                this.users = [];
-                this.optionsTabStationId = [];
             },
             cardEdit(data){
                 this.title = "编辑绑定";
                 this.card = data;
-                console.log(this.card)
-                this.remoteMethod(data.visitorsName);
-                this.remoteMethodTabStationId(data.tabCode);
-                this.remoteMethodUser(data.userName);
                 this.dialogVisible = true;
             },
             addCard(){
                 this.title = "新增绑定";
                 this.dialogVisible = true;
             },
-            remoteMethod(query) {
-                if (query !== '') {
-                    this.loading = true;
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.options = this.list.filter(item => {
-                            return item.label.indexOf(query) > -1;
-                        });
-                    }, 200);
-                } else {
-                    this.options = [];
-                }
-            },
-            remoteMethodUser(query){
-                if (query !== '') {
-                    this.loading = true;
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.users = this.listUser.filter(item => {
-                            console.log(item.value+"+++++++++++++++++++")
-                            console.log(item.label+"*******************")
-                            return item.label.indexOf(query) > -1;
-                        });
-                        console.log(this.users+"----------------")
-                    }, 200);
-                } else {
-                    this.users = [];
-                }
-                console.log(this.users+">>>>>>>>>>>>>>")
-            },
-            remoteMethodTabStationId(query) {
-                if (query !== '') {
-                    this.loading = true;
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.optionsTabStationId = this.listTabStation.filter(item => {
-                            return item.label.indexOf(query) > -1;
-                        });
-                    }, 200);
-                } else {
-                    this.optionsTabStationId = [];
-                }
-            },
-            initSearchIf(){
-                this.tabStationCode = "";
-                this.visitorName = "";
-                this.searchValue.userId = "";
-                this.searchValue.status = "";
-                this.searchValue.createDate = "";
-            },
             initCard(type){
-                this.initUser();
-                this.initVisitors();
-                this.initTabStation();
+                this.initUsers();
                 let url = '/position/card/base/?page=' + this.page + '&size=' + this.size;
                 if (type && type == 'advanced') {
-                    if (this.searchValue.userId != ""){
-                        url += "&userId=" + this.searchValue.userId;
-                    }
-                    if (this.searchValue.status != ""){
-                        url += "&status=" + this.searchValue.status;
+                    if (this.searchValue.statu != ""){
+                        url += "&status=" + this.searchValue.statu;
                     }
                     if (this.searchValue.createDate != ""){
-                        url += "&createDate=" + this.searchValue.createDate;
+                        url += "&beginDateScope=" + this.searchValue.createDate;
                     }
                 }else {
-                    url += "&tabStationCode=" + this.tabStationCode+"&visitorName="+this.visitorName;
+                    url += "&perVisitorTabVo.code=" + this.tabStationCode+"&perVisitorTabVo.visitor="+this.visitorName+"&perVisitorTabVo.username="+this.username;
                 }
                 this.getRequest(url).then(resp=>{
                     if (resp){
                         this.tableData = resp.data;
                         this.total = resp.total;
-                        this.initSearchIf();
+                        this.searchValue.createDate = '';
+                        this.tabStationCode = '';
+                        this.visitorName = '';
+                        this.username = '';
                     }
                 })
             },
-            /*************************************************************************************/
-            initUser(){
-                this.getRequest('/system/user/?keyWords='+"").then(resp=>{
-                    if (resp){
-                        this.listUser = resp.map(item=>{
-                            return { value: `${item.id}`, label: `${item.name}` };
-                        });
-                        console.log(this.listUser)
-                    }
-                })
+            initUsers(){
+                    this.getRequest('/system/user/?keyWords='+this.keyWords).then(resp=>{
+                        if (resp){
+                            console.log(resp)
+                            this.users = resp;
+                        }
+                    })
             },
-            initVisitors(){
-                this.getRequest("/position/visitors/base/").then(resp => {
-                    if (resp) {
-                        this.visitors = resp.records;
-                        this.list = this.visitors.map(item=>{
-                            return { value: `${item.id}`, label: `${item.name}` };
-                        });
-                        console.log(this.list);
-                    }
-                });
-            },
-            initTabStation(){
-                this.getRequest("/position/label/base/").then(resp => {
-                    if (resp) {
-                        this.tab = resp.records;
-                        this.listTabStation = this.tab.map(item=>{
-                            return { value: `${item.id}`, label: `${item.code}` };
-                        });
-                        console.log(this.listTabStation)
-                    }
-                });
-            },
-            /*************************************************************************************/
             currentChange(currentPage) {
                 this.page = currentPage;
                 this.initCard();
@@ -558,8 +419,6 @@
             },
             doAddCard(){
                     if (this.card.id) {
-                        console.log(this.card.userId)
-                        console.log(this.card.status)
                         this.$refs['cardForm'].validate(valid => {
                             if (valid) {
                                 this.putRequest("/position/card/base/", this.card).then(resp => {
